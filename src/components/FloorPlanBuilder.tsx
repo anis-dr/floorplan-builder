@@ -12,7 +12,6 @@ export const FloorPlanBuilder = () => {
   const ref = useRef(null);
   const [drawing, setDrawing] = useState(false);
   const [points, setPoints] = useState<Point[]>([]);
-  const [currentPoint, setCurrentPoint] = useState<number | null>(null);
 
   useEffect(() => {
     if (!ref.current) return; // Ensure ref is current before proceeding
@@ -50,14 +49,6 @@ export const FloorPlanBuilder = () => {
       setDrawing(false);
     }
 
-    function handleDragStart(event: MouseEvent, d: Point) {
-      setCurrentPoint(d.id);
-    }
-
-    function handleDragEnd() {
-      setCurrentPoint(null);
-    }
-
     function handleDrag(event: MouseEvent, d: Point) {
       const updatedPoints = points.map(p =>
         p.id === d.id ? {...p, coords: [event.x, event.y] as [number, number]} : p
@@ -77,9 +68,7 @@ export const FloorPlanBuilder = () => {
         .style('stroke-width', 2);
 
       const circleDrag = drag<SVGCircleElement, Point>()
-        .on("start", handleDragStart)
         .on("drag", handleDrag)
-        .on("end", handleDragEnd);
 
       // Draw circles for each point
       pointsGroup.selectAll<SVGCircleElement, Point>('circle')
